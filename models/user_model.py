@@ -69,10 +69,14 @@ class User(db.Model):
         if vuln:  # SQLi Injection 
             user_query = f"SELECT * FROM users WHERE username = '{username}'"
             results = db.session.execute(user_query)
-            fin_query = "{"
+            fin_query = ""
+            num_results = 0
             for row in results:
-                fin_query += '"username": "%s", "email": "%s" \n' % (row[1], row[3])
-            fin_query += "}"
+                fin_query += '{"username": "%s", "email": "%s"},\n' % (row[1], row[3])
+                num_results = num_results + 1
+            fin_query = fin_query.rstrip(',\n')
+            if num_results > 1:
+                fin_query = "[" + fin_query + "]"
         else:
             fin_query = User.query.filter_by(username=username).first()
         return fin_query
