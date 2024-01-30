@@ -67,8 +67,8 @@ class User(db.Model):
     @staticmethod
     def get_user(username):
         if vuln:  # SQLi Injection 
-            user_query = f"SELECT * FROM users WHERE username = '{username}'"
-            results = db.session.execute(user_query)
+            user_query = f"SELECT * FROM users WHERE username = ?"
+            results = db.session.execute(user_query, (username, ))
             fin_query = ""
             num_results = 0
             for row in results:
